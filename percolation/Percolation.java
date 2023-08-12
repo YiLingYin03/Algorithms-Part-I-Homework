@@ -4,6 +4,9 @@
  *  Last modified:     1/1/2019
  **************************************************************************** */
 
+import edu.princeton.cs.algs4.StdIn;
+import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -12,7 +15,7 @@ public class Percolation {
     private int openSites;
     private int TOP;
     private int BOTTOM;
-    private WeightedQuickUnionUF uf;
+    private final WeightedQuickUnionUF uf;
     private boolean[][] opened;
 
 
@@ -52,15 +55,15 @@ public class Percolation {
             uf.union(getUnionIndex(row, col), getUnionIndex(row - 1, col));
         }
         // bottom check
-        if (row > 1 && isOpen(row + 1, col)) {
+        if (row < size && isOpen(row + 1, col)) {
             uf.union(getUnionIndex(row, col), getUnionIndex(row + 1, col));
         }
         // left check
-        if (row > 1 && isOpen(row, col - 1)) {
+        if (col > 1 && isOpen(row, col - 1)) {
             uf.union(getUnionIndex(row, col), getUnionIndex(row, col - 1));
         }
         // right check
-        if (row > 1 && isOpen(row, col + 1)) {
+        if (col < size && isOpen(row, col + 1)) {
             uf.union(getUnionIndex(row, col), getUnionIndex(row, col + 1));
         }
 
@@ -78,7 +81,7 @@ public class Percolation {
      * @version 1.0.0
      */
     public void checkVaild(int row, int col) {
-        if (!(row >= 0 && row < size && col >= 0 && col < size)) {
+        if (row <= 0 || row > size || col <= 0 || col > size) {
             throw new IllegalArgumentException("Invaild Value!");
         }
     }
@@ -91,8 +94,12 @@ public class Percolation {
 
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
-        checkVaild(row, col);
-        return uf.find(getUnionIndex(row, col)) == uf.find(TOP);
+        if ((row > 0 && row <= size) && (col > 0 && col <= size)) {
+            return uf.find(getUnionIndex(row, col)) == uf.find(TOP);
+        }
+        else {
+            throw new IllegalArgumentException("Invaild Value!");
+        }
     }
 
     // returns the number of open sites
@@ -107,6 +114,15 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        
+        int n = StdIn.readInt();
+        Percolation percolation = new Percolation(n);
+        while (!percolation.percolates()) {
+            int raw = StdRandom.uniformInt(1, n + 1);
+            int col = StdRandom.uniformInt(1, n + 1);
+            if (!percolation.isOpen(raw, col)) {
+                percolation.open(raw, col);
+            }
+        }
+        StdOut.println("percolation number : " + percolation.openSites);
     }
 }
