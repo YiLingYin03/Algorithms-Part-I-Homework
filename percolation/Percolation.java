@@ -13,8 +13,8 @@ public class Percolation {
 
     private int size;
     private int openSites;
-    private int TOP;
-    private int BOTTOM;
+    private int top;
+    private int bottom;
     private final WeightedQuickUnionUF uf;
     private boolean[][] opened;
 
@@ -25,8 +25,8 @@ public class Percolation {
         opened = new boolean[n][n];
         uf = new WeightedQuickUnionUF(size * size + 2);
         openSites = 0;
-        TOP = 0;
-        BOTTOM = size * size + 1;
+        top = 0;
+        bottom = size * size + 1;
     }
 
     // opens the site (row, col) if it is not open already
@@ -34,17 +34,17 @@ public class Percolation {
         checkVaild(row, col);
         // open current site
         opened[row - 1][col - 1] = true;
-        openSites++;
+        ++openSites;
 
         // if row == 1
         // union it to the top site
         if (row == 1) {
-            uf.union(getUnionIndex(row, col), TOP);
+            uf.union(getUnionIndex(row, col), top);
         }
         // if row = size
         // union to the bottom
         if (row == size) {
-            uf.union(getUnionIndex(row, col), BOTTOM);
+            uf.union(getUnionIndex(row, col), bottom);
         }
         // if in the middle
         // to see if its neighbor(4 positions) is opened ?
@@ -80,7 +80,7 @@ public class Percolation {
      * @author ylyin
      * @version 1.0.0
      */
-    public void checkVaild(int row, int col) {
+    private void checkVaild(int row, int col) {
         if (row <= 0 || row > size || col <= 0 || col > size) {
             throw new IllegalArgumentException("Invaild Value!");
         }
@@ -95,7 +95,7 @@ public class Percolation {
     // is the site (row, col) full?
     public boolean isFull(int row, int col) {
         if ((row > 0 && row <= size) && (col > 0 && col <= size)) {
-            return uf.find(getUnionIndex(row, col)) == uf.find(TOP);
+            return uf.find(getUnionIndex(row, col)) == uf.find(top);
         }
         else {
             throw new IllegalArgumentException("Invaild Value!");
@@ -110,7 +110,7 @@ public class Percolation {
     // does the system percolate?
     public boolean percolates() {
         // to check if the top is connected to the bootom
-        return uf.find(TOP) == uf.find(BOTTOM);
+        return uf.find(top) == uf.find(bottom);
     }
 
     public static void main(String[] args) {
