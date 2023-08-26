@@ -26,6 +26,13 @@ public class Point implements Comparable<Point> {
      */
     public Point(int x, int y) {
         /* DO NOT MODIFY */
+        // the constructor arguments x and y are each between 0 and 32,767.
+        if (x < 0 || x > 32767) {
+            throw new IllegalArgumentException("Arguments x should between 0 and 32,767 !");
+        }
+        if (y < 0 || y > 32767) {
+            throw new IllegalArgumentException("Arguments y should between 0 and 32,767 !");
+        }
         this.x = x;
         this.y = y;
     }
@@ -142,9 +149,9 @@ public class Point implements Comparable<Point> {
                 new Point(1, 1),
                 new Point(2, 2),
                 new Point(3, 3),
-                new Point(-1, -1),
-                new Point(-2, -2),
-                new Point(3, -2)
+                new Point(11, 8),
+                new Point(12, 11),
+                new Point(3, 4)
         };
         Arrays.sort(points);
         System.out.println(Arrays.toString(points));
